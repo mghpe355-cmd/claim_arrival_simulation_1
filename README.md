@@ -24,7 +24,7 @@ We assume that claim arrivals follow a **Homogeneous Poisson Process** with a co
 *   The interarrival times between successive claims, $\{ \tau_i \}$, are Independent and Identically Distributed (i.i.d.) exponential random variables: $\tau_i \sim \text{Exp}(\lambda)$.
 *   Consequently, the probability of having exactly $n$ claims within time $t$ follows a Poisson distribution: $N(t) \sim \text{Po}(\lambda t)$.
 
-*Example Migration:* An arrival sequence of arrival epochs $\{T_i\}_{i=0}^{5}=(0,2,5,8,14,26)$ indicates that the first claim occurs at month 2, and the second at month 5. The continuous simulated paths are generated in `count.py`(./count.py) and visualized in `graph_1.jpg`(./graph_1.jpeg).
+*Example Migration:* An arrival sequence of arrival epochs $\{T_i\}_{i=0}^{5}=(0,2,5,8,14,26)$ indicates that the first claim occurs at month 2, and the second at month 5. The continuous simulated paths are generated in [`count.py`](./count.py) and visualized in [`graph_1.jpg`](./graph_1.jpeg).
 
 ### Monte Carlo Method & Ruin Probability
 By the **Weak Law of Large Numbers (WLLN)**, the sample mean of independent trials converges to the theoretical expected value as the sample size $n \to \infty$. We utilize an **Indicator Function** ($\mathbb{1}_A$) to define the financial ruin event $A$ (where surplus drops below zero, $U(t) < 0$):
@@ -45,6 +45,6 @@ $$\psi(u) \approx \frac{1}{n} \sum_{k=1}^{n} \mathbb{1}_{A}(\omega_k) = \frac{\t
 *   `num_simulations` ($n$): Total Monte Carlo path trajectories (e.g., $n = 10,000$).
 
 ### Script Descriptions
-*   `count.py`(./count.py): Simulates the Poisson arrival process and logs timestamps.
-*   `simulation.py`: Core function executing the event-based simulation and computing ruin frequencies.
-*   `graph_1.jpg`(./graph_1.jpeg): Visualized sample trajectories of the capital pool.
+*   [`count.py`](./count.py): Simulates the Poisson arrival process and logs timestamps.
+*   [`simulation.py`]: Core function executing the event-based simulation and computing ruin frequencies.
+*   [`graph_1.jpg`](./graph_1.jpeg): Visualized sample trajectories of the capital pool.
