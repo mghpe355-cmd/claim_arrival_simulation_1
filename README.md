@@ -2,7 +2,7 @@
 
 This repository implements a quantitative risk analytics project using **Monte Carlo Simulation** and **Stochastic Processes** to model an insurance company's surplus dynamics and estimate its financial ruin probability.
 
-Two distinct methodologies are explored: an **Event-Based Approach** and a **Time-Step Approach**.
+The methodology applied in this project is **Event-Based Approach**. 
 
 ---
 
@@ -53,7 +53,6 @@ To maintain reproducibility across simulations, a pseudo-random number generator
 
 ---
 
-## 3. Simulation Framework
 
 ## 3. Simulation Framework
 
@@ -81,11 +80,11 @@ To compute the overall default metrics, the simulation scales up to 10⁵ indepe
 4. **Endogenous Capital Updating**: Accrue interest-bearing premiums based on the active customer footprint during the elapsed interval, then apply discrete subtractions if a valid claim occurs.
 5. **Boundary Solvency Evaluation**: Assess the system against the strict ruin boundary (U(t) ≤ 0). If triggered, flag the trajectory instantly (\(\mathbb{1}_{\text{Ruin}} = 1\)) and break the loop.
 6. **Monte Carlo Aggregation**: Scale the loop across 10⁵ paths to converge on a stable empirical 
-# Output Verification: Ruin Probability = 0.00662
 ```
 
 
 ## 4. Results and Discussion
+
 
 ### Script Descriptions
 *   [`count.py`](./count.py): Simulates the Poisson arrival process and logs timestamps.
