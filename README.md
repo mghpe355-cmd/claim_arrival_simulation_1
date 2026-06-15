@@ -10,9 +10,9 @@ Assume the *interarrival time* between insurance claim follows a (homogenous) Po
 
 The remaining section describes the basic definitions of Monte Carlo method and Counting Process (=Poisson Process).
 ### Monte Carlo method
-Nothing but Weak law of Large Numbers (WLLN): when the sample size n is large enough (ideally n-> $\infty$), sample mean converges to (will be approximately the same as)  population mean.
+Nothing but Weak law of Large Numbers (WLLN): when the sample size n is large enough (ideally n-> $\infty$), sample mean converges to (will be approximately the same as)  population mean. We apply this to the indicator function.
 
-To estimate a probability using Monte Carlo simulation, a large number n of experimental results are generated. Define the *indicator function *($\mathbf{1}_{A}$) as below:<br>
+Define the *indicator function* ($\mathbf{1}_{A}$) as below:<br>
 
 $$
 \mathbb{1}_A(x) =
@@ -22,6 +22,14 @@ $$
 \end{cases}
 $$
 
+Simply put down a number 1 if event A occurs, 0 otherwise. Expectation $mathbb{E}(mathbb{1}_A(x)) =Pr(A happens)\times 1 + Pr(A does not happen) \times 0 =Pr(A)$. 
+
+To estimate a probability using Monte Carlo simulation, a large number n of experimental results are generated. The desired quantity is $Pr(A)=\frac{Number of times A occured in the n trials}{n}$. <br>
+
+大白話:
+*Indicator function* 即係如果事件A發生左,函數值就係1,否則就係0;
+用 Monte Carlo 估算概率 Pr(A) 就係先做n次隨機實驗 (如扔骰子 rolling a die),觀察 A總共發生左幾多次 (記次數為$n_A$), 再輸出答案
+$Pr(A)=\frac{n_A}{n}$.
 
 ### Counting Process
 Suppose a sequence $\{T_i\}_{i=0}^{\infty}$ denotes the time (a positive continuous random variable) of $i^{th}$ event happening. Initially, when time t=0 month, there are no insurance claims. 
