@@ -44,7 +44,7 @@ $$\psi(u) \approx \frac{1}{n} \sum_{k=1}^{n} \mathbb{1}_{A}(\omega_k) = \frac{\t
 To maintain reproducibility across simulations, a pseudo-random number generator seed is locked at `123` (`np.random.seed(123)`). The baseline stochastic model parameters are initialized as follows:
 
 *   `initial_capital`($u$) : The initial liquidity pool available to the insurer at time $t = 0$. Set to `2` units (representing 2000 HKD).
-*   `premium_rate` ($\c$): The continuous premium inflow rate collected from policyholders per unit time. Set to `0.1` units per month.
+*   `premium_rate` ($c$): The continuous premium inflow rate collected from policyholders per unit time. Set to `0.1` units per month.
 *   `arrival_rate` ($\lambda$): The hazard rate (intensity parameter) of the homogeneous Poisson process governing claim frequencies. Set to `0.5`, indicating an expected arrival frequency of 0.5 claims per month.
 *   `max_time` ($T$): The finite evaluation time horizon for each Monte Carlo trajectory path. Set to `20` units (months).
 *   `claim_amt`: The deterministic severity magnitude ($X_i$) assigned per incoming insurance claim. Set to `0.4` units.
@@ -85,8 +85,32 @@ To compute the overall default metrics, the simulation scales up to 10⁵ indepe
 
 ## 4. Results and Discussion
 
+### 4.1 Parameter Rationalization & Mathematical Viability
+To ensure the simulation reflects realistic macro-financial risk pooling, the hyperparameters were engineered to capture a micro-insurance or extended-warranty portfolio exhibiting steady-state viability under high stochastic variance:
+*   **Operating Horizon ($T = 20$):** Simulates a bounded 20-month product lifecycle typical of high-end electronics extended warranty programs.
+*   **Asset-Liability Equilibrium:** Under an infinite-server Markovian queue queueing setup ($M/M/\infty$), the long-term expected active customer size converges to $\mathbb{E}[N] = \lambda / \mu = 0.5 / 0.3 \approx 1.67$ active policies.
+*   **Expected P&L Drift:** The expected continuous premium collection rate is $\mathbb{E}[c] = 0.1 \times 1.67 = 0.167$ per unit time, while the expected claim payout drain is $\mathbb{E}[S] = 0.3 \times 0.4 = 0.120$. 
+
+Because $\mathbb{E}[c] > \mathbb{E}[S]$, the risk pool satisfies the **Net Profit Condition**, establishing a positive drift where the business is structurally profitable over a long horizon.
+
+### 4.2 Empirical Solvency Baseline
+Running $10^5$ independent stochastic trajectories yields an empirical **Ruin Probability of $\hat{P}(\text{Ruin}) = 0.00662$**. 
+
+This indicates that over a 20-month operational lifecycle, the portfolio maintains a **0.662% probability of insolvency**. In institutional risk frameworks (such as Solvency II), keeping default risk under 1% proves that an initial capital allocation of $U(0) = 2.0$ provides an exceptionally resilient safety margin against catastrophic left-tail claim clusters. Using the standard error formula for Bernoulli trials:
+$$SE = \sqrt{\frac{\hat{p}(1-\hat{p})}{N}} = \sqrt{\frac{0.00662 \times 0.99338}{100,000}} \approx 0.000256$$
+The resulting **95% Confidence Interval is $[0.00612, 0.00712]$**, proving the numerical stability and statistical convergence of the engine.
+
+---
+
+### 4.3 Algorithmic Paradigm: Event-Based vs. Time-Based Discretization
+There are 3 dimensions to discuss whether Event-Based apprach or Time-based approach should be used.
+
+*   **Temporal Precision:** The event-based approach guarantees **exact precision**. It jumps directly to event epochs ($\tau = \min(\tau_a, \tau_c)$), capturing the precise sub-interval premium revenue earned. Conversely, time-based grids constrain events to fixed intervals ($\Delta t$), truncating intra-step compound events and skewing the ruin time.
+*   **Mathematical Rigor:** By tracking exact continuous-time stochastic horizons, the system preserves the true memoryless Markovian properties of the Poisson and Exponential processes, eliminating numerical grid leakage entirely.
+*   **Computational Efficiency:** The event-based algorithm scales at $\mathcal{O}(E)$, where $E$ is the total number of events. Loops execute *only* when a systemic state change occurs. Time-based stepping scales at $\mathcal{O}(T/\Delta t)$, wasting massive CPU cycles processing empty time blocks when event density is low. Conversely, if the frequency of events is high, time-based approach should be applied to estimate the total number of events, in the expense of mathematical rigor.
+---
 
 ### Script Descriptions
 *   [`count.py`](./count.py): Simulates the Poisson arrival process and logs timestamps.
-*   [`simulation.ipynb`](./simulation.ipynb): Core function executing the event-based simulation and computing ruin frequencies.
+*   [`simulation.ipynb`](./simulation.ipynb): Demonstration on the Simulation framework of Event-based approach of the project.
 *   [`graph_1.jpg`](./graph_1.jpg): Visualized sample trajectories of the capital pool.
