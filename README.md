@@ -12,7 +12,7 @@ The remaining section describes the basic definitions of Monte Carlo method and 
 ### Monte Carlo method
 Nothing but Weak law of Large Numbers (WLLN): when the sample size n is large enough (ideally n-> $\infty$), sample mean converges to (will be approximately the same as)  population mean.
 
-To estimate a probability using Monte Carlo simulation, a large number n of experimental results are generated. Define the *indicator function *($\mathbf{1}_{A}$) as below:
+To estimate a probability using Monte Carlo simulation, a large number n of experimental results are generated. Define the *indicator function *($\mathbf{1}_{A}$) as below:<\br>
 \[
 \mathbb{1}_A(x) = 
 \begin{cases} 
