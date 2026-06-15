@@ -24,7 +24,7 @@ We assume that claim arrivals follow a **Homogeneous Poisson Process** with a co
 *   The interarrival times between successive claims, $\{ \tau_i \}$, are Independent and Identically Distributed (i.i.d.) exponential random variables: $\tau_i \sim \text{Exp}(\lambda)$.
 *   Consequently, the probability of having exactly $n$ claims within time $t$ follows a Poisson distribution: $N(t) \sim \text{Po}(\lambda t)$.
 
-*Example Migration:* An arrival sequence of arrival epochs $\{T_i\}_{i=0}^{5}=(0,2,5,8,14,26)$ indicates that the first claim occurs at month 2, and the second at month 5. The continuous simulated paths are generated in [`count.py`](./count.py) and visualized in [`graph_1.jpg`](./graph_1.jpg).
+*Simple Example:* An arrival sequence of arrival epochs $\{T_i\}_{i=0}^{5}=(0,2,5,8,14,26)$ indicates that the first claim occurs at month 2, and the second at month 5. The continuous simulated paths are generated in [`count.py`](./count.py) and visualized in [`graph_1.jpg`](./graph_1.jpg).
 
 ### Monte Carlo Method & Ruin Probability
 By the **Weak Law of Large Numbers (WLLN)**, the sample mean of independent trials converges to the theoretical expected value as the sample size $n \to \infty$. We utilize an **Indicator Function** ($\mathbb{1}_A$) to define the financial ruin event $A$ (where surplus drops below zero, $U(t) < 0$):
@@ -36,15 +36,58 @@ $$\psi(u) \approx \frac{1}{n} \sum_{k=1}^{n} \mathbb{1}_{A}(\omega_k) = \frac{\t
 
 ---
 
+
+
 ## 2. Project Structure & Variables
 
 ### Variable Initialization
-*   `initial_capital` ($u$): Starting funds of the insurance pool.
-*   `premium_rate` ($c$): Continuous premium inflows collected from policyholders.
-*   `arrival_rate` ($\lambda$): Poisson intensity controlling claim frequencies.
-*   `num_simulations` ($n$): Total Monte Carlo path trajectories (e.g., $n = 10,000$).
+To maintain reproducibility across simulations, a pseudo-random number generator seed is locked at `123` (`np.random.seed(123)`). The baseline stochastic model parameters are initialized as follows:
+
+*   `initial_capital`($u$) : The initial liquidity pool available to the insurer at time $t = 0$. Set to `2` units (representing 2000 HKD).
+*   `premium_rate` ($\c$): The continuous premium inflow rate collected from policyholders per unit time. Set to `0.1` units per month.
+*   `arrival_rate` ($\lambda$): The hazard rate (intensity parameter) of the homogeneous Poisson process governing claim frequencies. Set to `0.5`, indicating an expected arrival frequency of 0.5 claims per month.
+*   `max_time` ($T$): The finite evaluation time horizon for each Monte Carlo trajectory path. Set to `20` units (months).
+*   `claim_amt`: The deterministic severity magnitude ($X_i$) assigned per incoming insurance claim. Set to `0.4` units.
+*   `claim_rate`: The operational rate parameter or scaling factor linked to loss distribution functions. Set to `0.3`.
+*   `num_simulations` ($num_sim$): The total number of independent Monte Carlo path trajectories simulated to compute statistical expectations. Set to `10,000` iterations for robust convergence.
+
+---
+
+## 3. Simulation Framework
+
+## 3. Simulation Framework
+
+### Method 1: Event-Based Simulation Approach
+The simulation framework employs an event-driven discrete simulation engine rather than a fixed-interval time grid. The model shifts the continuous time clock directly to the next earliest occurring stochastic event. 
+
+The analytical workflow executes in a two-stage pipeline: **Single-Path Trajectory Diagnostics** to visually profile the system behavior, followed by a scaled **Monte Carlo Simulation** to compute the empirical default/ruin probability.
+
+---
+
+### Stage 1: Single-Path Trajectory Diagnostics
+Before running large-scale aggregations, single trajectories are isolated and evaluated using step plots (`where='post'`) to adhere to real-world operational dynamics. 
+
+The script below generates two visual benchmarks:
+1. **Capital Trajectory Profile**: Plots continuous reserve capital against time to depict 1 possible path of change in capital reserve
+2. **Operational Volume Correlation**: Co-plots the active customer pool size and accumulated claims over the time horizon to visualize asset-liability coupling.
+
+
+### Stage 2: Algorithmic Execution Matrix (Monte Carlo)
+To compute the overall default metrics, the simulation scales up to 10⁵ independent paths. The algorithm systematically avoids edge-case infinite loops and timeline distortions by maintaining synchronized structural updates across all states:
+
+1. **Interarrival Sampling**: Generate stochastic waiting times for customer arrivals (\(\tau_a\)) and claims (\(\tau_c\)) using inverse transform sampling from memoryless Exponential distributions.
+2. **Dynamic Event Dispatching**: Evaluate \(\min(\tau_a, \tau_c)\) to determine if the next systemic transition is a new policy onboarding or a claim payout.
+3. **Temporal Progression**: Advance the continuous global clock directly to the winning epoch: \(t_{new} = t_{old} + \min(\tau_a, \tau_c)\).
+4. **Endogenous Capital Updating**: Accrue interest-bearing premiums based on the active customer footprint during the elapsed interval, then apply discrete subtractions if a valid claim occurs.
+5. **Boundary Solvency Evaluation**: Assess the system against the strict ruin boundary (U(t) ≤ 0). If triggered, flag the trajectory instantly (\(\mathbb{1}_{\text{Ruin}} = 1\)) and break the loop.
+6. **Monte Carlo Aggregation**: Scale the loop across 10⁵ paths to converge on a stable empirical 
+# Output Verification: Ruin Probability = 0.00662
+```
+
+
+## 4. Results and Discussion
 
 ### Script Descriptions
 *   [`count.py`](./count.py): Simulates the Poisson arrival process and logs timestamps.
-*   [`simulation.py`]: Core function executing the event-based simulation and computing ruin frequencies.
+*   [`simulation.ipynb`](./simulation.ipynb): Core function executing the event-based simulation and computing ruin frequencies.
 *   [`graph_1.jpg`](./graph_1.jpg): Visualized sample trajectories of the capital pool.
