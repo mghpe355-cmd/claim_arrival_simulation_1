@@ -48,7 +48,7 @@ To maintain reproducibility across simulations, a pseudo-random number generator
 *   `arrival_rate` ($\lambda$): The hazard rate (intensity parameter) of the homogeneous Poisson process governing claim frequencies. Set to `0.5`, indicating an expected arrival frequency of 0.5 claims per month.
 *   `max_time` ($T$): The finite evaluation time horizon for each Monte Carlo trajectory path. Set to `20` units (months).
 *   `claim_amt`: The deterministic severity magnitude ($X_i$) assigned per incoming insurance claim. Set to `0.4` units.
-*   `claim_rate`: The operational rate parameter or scaling factor linked to loss distribution functions. Set to `0.3`.
+*   `claim_rate`: The  parameter of Poisson process describing the arrival of insurance claims. Set to `0.3`.
 *   `num_simulations` ($num_sim$): The total number of independent Monte Carlo path trajectories simulated to compute statistical expectations. Set to `10,000` iterations for robust convergence.
 
 ---
