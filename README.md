@@ -13,7 +13,7 @@ The remaining section describes the basic definitions of Monte Carlo method and 
 
 
 ### Counting Process
-Suppose a sequence $\{T_i\}_{i=0}^{\inf}$ denotes the time (a positive continuous random variable) of $i^{th}$ event happening. Initially, when time t=0 month, there are no insurance claims. 
+Suppose a sequence $\{T_i\}_{i=0}^{\infty}$ denotes the time (a positive continuous random variable) of $i^{th}$ event happening. Initially, when time t=0 month, there are no insurance claims. 
 
 
 Example:
