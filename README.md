@@ -24,7 +24,7 @@ $$
 
 Simply put down a number 1 if event A occurs, 0 otherwise. Expectation $mathbb{E}(mathbb{1}_A(x)) =Pr(A happens)\times 1 + Pr(A does not happen) \times 0 =Pr(A)$. 
 
-To estimate a probability using Monte Carlo simulation, a large number n of experimental results are generated. The desired quantity is $Pr(A)=\frac{Number of times A occured in the n trials}{n}$. <br>
+To estimate a probability using Monte Carlo simulation, a large number n of experimental results are generated. The desired quantity is $Pr(A)=\frac{\text{Number of times A occured in the n trials}}{n}$. <br>
 
 大白話:
 *Indicator function* 即係如果事件A發生左,函數值就係1,否則就係0;
